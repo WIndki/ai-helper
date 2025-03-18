@@ -5,6 +5,9 @@
         position: relative;
         max-width: none;
     }
+    .markdown p {
+        word-wrap:break-word;
+    }
     .markdown h1,
     .markdown h2 {
         font-weight: 600;

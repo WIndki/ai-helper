@@ -1,7 +1,9 @@
+import { useAppContext } from "@/components/AppContext"
 import Markdown from "@/components/common/Markdown"
 import { Message } from "@/types/chat"
 
 export default function MessageBox({ item }: { item: Message }) {
+    const { state: { streamingId } } = useAppContext()
     return (
         <div className={`flex ${item.role === "user" ? "justify-end" : "justify-start"} relative group`}>
             {item.role === "assistant" && (
@@ -12,13 +14,15 @@ export default function MessageBox({ item }: { item: Message }) {
                 </div>
             )}
             <div
-                className={`max-w-[80%] m-2 p-4 relative ${
+                className={`max-w-[80%]  m-2 p-4 relative ${
                     item.role === "user" 
                         ? "bg-blue-800 text-white rounded-tl-lg rounded-tr-lg rounded-bl-lg rounded-br-sm" 
                         : "bg-gray-100 dark:bg-gray-900 dark:text-gray-300 rounded-tr-lg rounded-bl-sm rounded-br-lg rounded-tl-lg"
                 }`}
             >
-                <Markdown>{item.content}</Markdown>
+                <Markdown>{`${item.content}${
+                    item.id === streamingId ? "▍" : ""
+                }`}</Markdown>
                 <button
                     onClick={() => navigator.clipboard.writeText(item.content)}
                     className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity"

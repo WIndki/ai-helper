@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "../styles/Markdown.css"
 import AppContextProvider from "@/components/AppContext";
+import EventContextProvider from "@/components/EventBusContext";
 
 
 export const metadata: Metadata = {
@@ -17,7 +18,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AppContextProvider>{children}</AppContextProvider>
+        <AppContextProvider>
+          <EventContextProvider>
+            {children}
+          </EventContextProvider>
+        </AppContextProvider>
       </body>
     </html>
   );
