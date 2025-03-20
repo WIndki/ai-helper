@@ -60,6 +60,7 @@
         margin-bottom: 0;
         margin-top: 0;
         min-height: 28px;
+        
     }
     .markdown ol > li:before {
         --tw-translate-x: -100%;
@@ -67,7 +68,7 @@
         color: rgba(142, 142, 160, var(--tw-text-opacity));
         content: counters(list-number, ".") ".";
         padding-right: 0.5rem;
-        position: absolute;
+        margin-right: 5px;
         transform: translate(var(--tw-translate-x), var(--tw-translate-y))
             rotate(var(--tw-rotate)) skewX(var(--tw-skew-x))
             skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x))
@@ -86,7 +87,8 @@
     }
     .markdown ul > li {
         display: block;
-        margin: 0;
+        margin-bottom: 0;
+        margin-top: 0;
         min-height: 28px;
     }
     .markdown ul > li:before {
@@ -95,7 +97,7 @@
         font-size: 0.875rem;
         line-height: 1.25rem;
         padding-right: 0.5rem;
-        position: absolute;
+        margin-right: 5px;
         transform: translate(var(--tw-translate-x), var(--tw-translate-y))
             rotate(var(--tw-rotate)) skewX(var(--tw-skew-x))
             skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x))
@@ -103,7 +105,8 @@
     }
     .markdown ol li > p,
     .markdown ul li > p {
-        margin: 0 2em;
+        display: inline;
+        margin: 0 0em;
     }
 
     .markdown ol li > pre,

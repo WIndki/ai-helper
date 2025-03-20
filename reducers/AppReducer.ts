@@ -8,6 +8,7 @@ export type State = {
     messageList: Message[];
     streamingId: string;
     selectedChat?: Chat | null;
+    isExpanded: boolean;
 }
 
 export enum ActionType {
@@ -33,10 +34,11 @@ export type Action = UpdateAction | MessageAction
 export const initState: State = {
     displayNavigation: true,
     themeMode: window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light",
-    selectedModelId: "gpt-3.5-turbo",
+    selectedModelId: "qwen-plus",
     showAllExamples: false,
     messageList: [],
-    streamingId: ""
+    streamingId: "",
+    isExpanded: false
 }
 
 

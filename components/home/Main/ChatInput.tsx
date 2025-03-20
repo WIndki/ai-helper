@@ -10,12 +10,32 @@ import { useAppContext } from "@/components/AppContext";
 import { ActionType } from "@/reducers/AppReducer";
 import { useEventContext } from "@/components/EventBusContext";
 
+// 创建一个全局变量来存储setMessageText函数
+let globalSetMessageText: ((text: string) => void) | null = null;
+
+// 导出一个hook，允许其他组件设置messageText
+export function usePrompt(prompt: string) {
+    if (globalSetMessageText && prompt) {
+        globalSetMessageText(prompt);
+        return true;
+    }
+    return false;
+}
+
 export default function ChatInput() {
     const [messageText, setMessageText] = useState('')
     const stopRef = useRef(false)
     const chatIdRef = useRef('')
     const { state: { messageList, selectedModelId, streamingId, selectedChat }, dispatch } = useAppContext()
     const { publish } = useEventContext()
+
+    // 保存setMessageText到全局变量
+    useEffect(() => {
+        globalSetMessageText = setMessageText;
+        return () => {
+            globalSetMessageText = null;
+        };
+    }, []);
 
     useEffect(() => {
         if (selectedChat?.id === chatIdRef.current) return
@@ -39,26 +59,12 @@ export default function ChatInput() {
         const { data } = await response.json()
         if (!chatIdRef.current) {
             chatIdRef.current = data.message.chatId
-            publish("chat-select")
+            publish("fetchChatList")
             dispatch({ type: ActionType.UPDATE, field: 'selectedChat', value: { id: chatIdRef.current } })
         }
         return data.message
     }
 
-    async function deleteMessage(id: string) {
-        const response = await fetch(`/api/message/delete?id=${id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        })
-        if (!response.ok || !response.body) {
-            console.error(response.statusText)
-            return
-        }
-        const { code } = await response.json()
-        return code === 0
-    }
 
     async function reSendMessage() {
         const lastMessage: Message = messageList.filter((m) => { return m.role === "user" }).slice(-1)[0]
@@ -119,6 +125,7 @@ export default function ChatInput() {
         }
         createOrUpdateMessage({ ...responseMessage, content })
         dispatch({ type: ActionType.UPDATE, field: 'streamingId', value: '' })
+        publish("fetchChatList")
     }
 
     return (

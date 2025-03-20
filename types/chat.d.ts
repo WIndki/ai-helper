@@ -15,3 +15,8 @@ export interface MessageRequestBody {
     messages: Message[];
     model: string;
 }
+
+export interface Model {
+    id: string;
+    name: string;
+}

@@ -5,7 +5,6 @@ import ChatItem from "./ChatItem";
 import { useEventContext } from "@/components/EventBusContext";
 import { useAppContext } from "@/components/AppContext";
 import { ActionType } from "@/reducers/AppReducer";
-import { userAgent } from "next/server";
 
 export default function ChatList() {
     const [chatList, setChatList] = useState<Chat[]>([])
@@ -46,18 +45,18 @@ export default function ChatList() {
 
     useEffect(() => {
         getData()
-    }, [])
+    },[])
 
     useEffect(() => {
         const callback: EventListener = () => {
             pageRef.current = 1
             getData()
         }
-        subscribe("chat-select", callback)
+        subscribe("fetchChatList", callback)
         return () => {
-            unsubscribe("chat-select", callback)
+            unsubscribe("fetchChatList", callback)
         }
-    }, [])
+    },[])
 
     useEffect(() => {
         let observer: IntersectionObserver | null = null
@@ -103,7 +102,7 @@ export default function ChatList() {
                             </ul>
                         </div>
                     )
-                }).reverse()
+                })
             }
             <div ref={loadMoreRef}>&nbsp;</div>
         </div>

@@ -4,16 +4,26 @@ import Button from "@/components/common/Button";
 import { useAppContext } from "@/components/AppContext";
 import { ActionType } from "@/reducers/AppReducer";
 import { motion, AnimatePresence } from "framer-motion";
+import { use, useEffect, useState } from "react";
+import { usePrompt } from "@/components/home/Main/ChatInput";
+
+function useTextAreaHook(choicePrompt: string) {
+    usePrompt(choicePrompt);
+}
 
 export default function Example() {
     const { state: { showAllExamples }, dispatch } = useAppContext()
+    const [choicePrompt, setChoicePrompt] = useState("")
+
+    useTextAreaHook(examples.find(item => item.act === choicePrompt)?.prompt || "");
+
     return (
         <>
             <div className="mt-20 mb-4 text-4xl">
                 <MdOutlineTipsAndUpdates />
             </div>
             <motion.ul
-                className="flex justify-center flex-wrap gap-3.5"
+                className="flex flex-wrap justify-center gap-3.5 px-3"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.1, ease: "easeInOut" }}
@@ -30,7 +40,7 @@ export default function Example() {
                                     exit={{ opacity: 0, scale: 0.8 }}
                                     transition={{ duration: 0.3, delay: index * 0.02 }}
                                 >
-                                    <Button className="bg-gray-300 hover:bg-gray-500 hover:font-bold dark:bg-gray-700 dark:hover:bg-gray-600">
+                                    <Button className={`${ choicePrompt === item.act ? "!text-white font-bold !bg-blue-500 !dark:bg-blue-900" : "" } bg-gray-300 hover:bg-gray-500 hover:font-bold dark:bg-gray-700 dark:hover:bg-gray-600`} onClick={() => setChoicePrompt(item.act)} disabled={choicePrompt === item.act}>
                                         {item.act}
                                     </Button>
                                 </motion.li>

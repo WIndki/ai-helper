@@ -1,21 +1,37 @@
+import { fetchAvailableModel } from "@/common/fetchAvailableModel"
 import { useAppContext } from "@/components/AppContext"
 import { ActionType } from "@/reducers/AppReducer"
+import { use, useEffect, useState } from "react"
 import { PiLightning, PiShootingStarFill } from "react-icons/pi"
 
 export default function ModelSelect() {
     const models = [
         {
-            id: "gpt-3.5-turbo",
-            name: "GPT-3.5 Turbo",
+            id: "qwen-plus",
+            name: "通义千问",
             icon: PiLightning
         },
         {
-            id: "gpt-4",
-            name: "GPT-4",
+            id: "deepseek-r1",
+            name: "DeepSeek R1",
             icon: PiShootingStarFill
         }
     ]
     const { state: { selectedModelId }, dispatch } = useAppContext()
+    // const [modelList, setModelList] = useState<{id : string}[]>([])
+    // async function fetchAvailableModel() {
+    //     const response = await fetch('/api/model/list')
+    //     if (!response.ok || !response.body) {
+    //         console.error(response.statusText)
+    //         return
+    //     }
+    //     const { body } = await response.json()
+    //     setModelList(body.data.map((item: { id: string }) => item.id))
+    // }
+    // useEffect(() => {
+    //     fetchAvailableModel()
+    // }, [])
+    // console.log(modelList)
     return (
         <div className="flex bg-gray-100 dark:bg-gray-900 p-1 rounded-xl">
             {

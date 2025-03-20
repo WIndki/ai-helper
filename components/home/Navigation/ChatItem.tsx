@@ -3,14 +3,63 @@ import { PiChatBold, PiTrashBold, PiPenBold } from "react-icons/pi"
 import { AiOutlineEdit } from "react-icons/ai"
 import { MdCheck, MdClose, MdDeleteOutline} from "react-icons/md"
 import { useEffect, useState } from "react"
+import { useEventContext } from "@/components/EventBusContext"
+import { useAppContext } from "@/components/AppContext"
+import { ActionType } from "@/reducers/AppReducer"
 
 export default function ChatItem( { item, selected, onSelect } : { item: Chat, selected: boolean ,onSelect: (chat: Chat) => void } ) {
     const [editing, setEditing] = useState(false)
     const [Deleting, setDeleting] = useState(false)
+    const [title, setTitle] = useState(item.title)
+    const { publish } = useEventContext()
+    const { state: { selectedChat }, dispatch } = useAppContext()
+
     useEffect(() => {
         setEditing(false)
         setDeleting(false)
     }, [selected])
+
+    async function updateChat() {
+        const response = await fetch(`/api/chat/update`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({id: item.id, title: title})
+        })
+        if (!response.ok) {
+            console.error("Failed to update chat")
+            return
+        }
+        const { code } = await response.json()
+        if (code === 0) {
+            publish("fetchChatList")
+        }
+    }
+
+    async function deleteChat() {
+        const response = await fetch(`/api/chat/delete`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({id: item.id})
+        })
+        if (!response.ok) {
+            console.error("Failed to delete chat")
+            return
+        }
+        const { code } = await response.json()
+        if (code === 0) {
+            publish("fetchChatList")
+            if (selectedChat?.id === item.id) {
+                dispatch({ type: ActionType.UPDATE, field: "messageList", value: [] })
+                dispatch({ type: ActionType.UPDATE, field: "selectedChat", value: null })
+                console.log("selectedChat", selectedChat)
+            }
+        }
+    }
+
     return (
         <li
             key={item.id}
@@ -20,7 +69,9 @@ export default function ChatItem( { item, selected, onSelect } : { item: Chat, s
                 {Deleting ? <PiTrashBold /> : editing ? <PiPenBold /> : <PiChatBold />}
             </div>
             {editing
-                ? (<input className="flex-1 min-w-0 bg-transparent outline-none" defaultValue={item.title} />)
+                ? (<input className="flex-1 min-w-0 bg-transparent outline-none" autoFocus={true} value={title} onChange={(e) => {
+                    setTitle(e.target.value)
+                }} />)
                 : (<div className="relative flex-1 whitespace-nowrap overflow-hidden">
                     {item.title}
                     <span className={`group-hover:from-gray-800 absolute right-0 inset-y-0 w-8 bg-gradient-to-l ${selected ? "from-gray-800" : "from-gray-900"} `}></span>
@@ -34,9 +85,9 @@ export default function ChatItem( { item, selected, onSelect } : { item: Chat, s
                             <button className="p-1 hover:text-white"
                                 onClick={(e) => {
                                     if (Deleting) {
-                                        console.log("delete", item.id)
+                                        deleteChat()
                                     } else if (editing) {
-                                        console.log("edit", item.id)
+                                        updateChat()
                                     }
                                     setDeleting(false)
                                     setEditing(false)

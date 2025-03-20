@@ -15,6 +15,7 @@ export async function POST(request: NextRequest) {
         await prisma.chat.update({
             where: { id: data.chatId },
             data: {
+                title: data.content.slice(0, 15),
                 updateTime: new Date()
             }
         })

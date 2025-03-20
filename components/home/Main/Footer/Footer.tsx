@@ -11,7 +11,7 @@ export default function Footer() {
                 </a>
                 <span className="text-gray-500 dark:text-gray-400">•</span>
                 <a className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 animated-underline">
-                    © 2021 Windki
+                    © 2025 Windki
                 </a>
             </div>
         </footer>
